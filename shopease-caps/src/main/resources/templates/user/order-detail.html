@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Order Details')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div class="page-container">
+    <a th:href="@{/orders}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Orders</a>
+    <h1 class="page-title">Order #<span th:text="${order.id}"></span></h1>
+
+    <div class="order-detail-grid">
+        <div class="order-detail-card">
+            <h3><i class="fas fa-info-circle"></i> Order Info</h3>
+            <div class="info-row"><span>Status</span>
+                <span th:class="'status-badge status-' + ${order.status.toString().toLowerCase()}"
+                      th:text="${order.status}"></span>
+            </div>
+            <div class="info-row"><span>Date</span>
+                <span th:text="${#temporals.format(order.orderDate, 'dd MMM yyyy, hh:mm a')}"></span>
+            </div>
+            <div class="info-row"><span>Payment</span>
+                <span th:text="${order.paymentMethod}"></span>
+            </div>
+            <div class="info-row"><span>Shipping To</span>
+                <span th:text="${order.shippingAddress}"></span>
+            </div>
+        </div>
+
+        <div class="order-detail-card">
+            <h3><i class="fas fa-box"></i> Items</h3>
+            <div class="detail-item" th:each="item : ${order.items}">
+                <img th:src="${item.product.imageUrl}" th:alt="${item.product.name}"
+                     onerror="this.src='https://via.placeholder.com/60x60?text=Img'"/>
+                <div class="detail-item-info">
+                    <span th:text="${item.product.name}">Product</span>
+                    <span class="muted">Qty: <span th:text="${item.quantity}"></span> × ₹<span th:text="${#numbers.formatDecimal(item.price,1,'COMMA',2,'POINT')}"></span></span>
+                </div>
+                <span class="detail-item-total">₹<span th:text="${#numbers.formatDecimal(item.subtotal,1,'COMMA',2,'POINT')}"></span></span>
+            </div>
+            <div class="order-total-row">
+                <strong>Order Total:</strong>
+                <strong>₹<span th:text="${#numbers.formatDecimal(order.totalAmount,1,'COMMA',2,'POINT')}"></span></strong>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="footer"><p>&copy; 2026 ShopEase. All rights reserved.</p></footer>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

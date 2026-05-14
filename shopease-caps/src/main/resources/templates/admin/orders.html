@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Manage Orders')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div class="page-container">
+    <h1 class="page-title"><i class="fas fa-clipboard-list"></i> Manage Orders</h1>
+
+    <div th:if="${success}" class="alert alert-success">
+        <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th><th>Customer</th><th>Items</th>
+                    <th>Total</th><th>Payment</th><th>Date</th><th>Status</th><th>Update</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="order : ${orders}">
+                    <td>#<span th:text="${order.id}"></span></td>
+                    <td>
+                        <div th:text="${order.user.name}">Name</div>
+                        <small th:text="${order.user.email}">email</small>
+                    </td>
+                    <td th:text="${order.items.size()} + ' item(s)'">0</td>
+                    <td>₹<span th:text="${#numbers.formatDecimal(order.totalAmount,1,'COMMA',2,'POINT')}"></span></td>
+                    <td th:text="${order.paymentMethod}">COD</td>
+                    <td th:text="${#temporals.format(order.orderDate,'dd MMM yyyy')}">Date</td>
+                    <td>
+                        <span th:class="'status-badge status-' + ${order.status.toString().toLowerCase()}"
+                              th:text="${order.status}"></span>
+                    </td>
+                    <td>
+                        <form th:action="@{/admin/orders/status}" method="post" class="inline-form">
+                            <input type="hidden" name="orderId" th:value="${order.id}"/>
+                            <select name="status" onchange="this.form.submit()">
+                                <option th:each="s : ${T(com.shopease.model.Order.OrderStatus).values()}"
+                                        th:value="${s}" th:text="${s}"
+                                        th:selected="${s == order.status}"></option>
+                            </select>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<footer class="footer"><p>&copy; 2026 ShopEase Admin Panel</p></footer>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('My Orders')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="page-container">
+    <h1 class="page-title"><i class="fas fa-box"></i> My Orders</h1>
+
+    <div th:if="${success}" class="alert alert-success">
+        <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="alert alert-error">
+        <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+    </div>
+
+    <div th:if="${#lists.isEmpty(orders)}" class="empty-state">
+        <i class="fas fa-box-open"></i>
+        <h3>No orders yet!</h3>
+        <a th:href="@{/products}" class="btn-primary">Start Shopping</a>
+    </div>
+
+    <div class="orders-list" th:unless="${#lists.isEmpty(orders)}">
+        <div class="order-card" th:each="order : ${orders}">
+            <div class="order-header">
+                <div>
+                    <span class="order-id">Order #<span th:text="${order.id}"></span></span>
+                    <span class="order-date"
+                          th:text="${#temporals.format(order.orderDate, 'dd MMM yyyy, hh:mm a')}">Date</span>
+                </div>
+                <div class="order-status-badge"
+                     th:class="'status-badge status-' + ${order.status.toString().toLowerCase()}"
+                     th:text="${order.status}">Status</div>
+            </div>
+            <div class="order-products">
+                <span th:each="item : ${order.items}" class="order-product-name">
+                    <span th:text="${item.product.name}"></span> x<span th:text="${item.quantity}"></span>
+                </span>
+            </div>
+            <div class="order-footer">
+                <span class="order-total">
+                    Total: <strong>₹<span th:text="${#numbers.formatDecimal(order.totalAmount, 1, 'COMMA', 2, 'POINT')}"></span></strong>
+                </span>
+                <span class="order-payment" th:text="${order.paymentMethod}">Payment</span>
+                <a th:href="@{/orders/{id}(id=${order.id})}" class="btn-secondary-sm">
+                    View Details
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <p>&copy; 2026 ShopEase. All rights reserved.</p>
+</footer>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

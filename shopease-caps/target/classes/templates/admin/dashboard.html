@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Admin Dashboard')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="page-container">
+    <div class="admin-header">
+        <h1><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h1>
+        <p>Welcome back, Admin! Here's what's happening in ShopEase.</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card blue">
+            <i class="fas fa-box"></i>
+            <div>
+                <h3 th:text="${totalProducts}">0</h3>
+                <p>Total Products</p>
+            </div>
+        </div>
+        <div class="stat-card green">
+            <i class="fas fa-shopping-bag"></i>
+            <div>
+                <h3 th:text="${totalOrders}">0</h3>
+                <p>Total Orders</p>
+            </div>
+        </div>
+        <div class="stat-card purple">
+            <i class="fas fa-users"></i>
+            <div>
+                <h3 th:text="${totalUsers}">0</h3>
+                <p>Registered Users</p>
+            </div>
+        </div>
+        <div class="stat-card orange">
+            <i class="fas fa-rupee-sign"></i>
+            <div>
+                <h3>₹<span th:text="${#numbers.formatDecimal(totalRevenue, 1, 'COMMA', 2, 'POINT')}">0</span></h3>
+                <p>Total Revenue</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <a th:href="@{/admin/products/new}" class="action-btn">
+            <i class="fas fa-plus"></i> Add Product
+        </a>
+        <a th:href="@{/admin/products}" class="action-btn">
+            <i class="fas fa-boxes"></i> Manage Products
+        </a>
+        <a th:href="@{/admin/orders}" class="action-btn">
+            <i class="fas fa-clipboard-list"></i> Manage Orders
+        </a>
+        <a th:href="@{/admin/users}" class="action-btn">
+            <i class="fas fa-users"></i> View Users
+        </a>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="admin-section">
+        <h2><i class="fas fa-clock"></i> Recent Orders</h2>
+        <div class="table-wrapper">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="order, iterStat : ${recentOrders}" th:if="${iterStat.index < 10}">
+                        <td>#<span th:text="${order.id}"></span></td>
+                        <td th:text="${order.user.name}">Name</td>
+                        <td>₹<span th:text="${#numbers.formatDecimal(order.totalAmount,1,'COMMA',2,'POINT')}"></span></td>
+                        <td>
+                            <span th:class="'status-badge status-' + ${order.status.toString().toLowerCase()}"
+                                  th:text="${order.status}"></span>
+                        </td>
+                        <td th:text="${#temporals.format(order.orderDate,'dd MMM yyyy')}">Date</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<footer class="footer"><p>&copy; 2026 ShopEase Admin Panel</p></footer>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

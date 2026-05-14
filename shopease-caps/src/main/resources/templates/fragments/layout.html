@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${title} + ' | ShopEase'">ShopEase</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+
+<body>
+
+<nav th:fragment="navbar" class="navbar">
+    <div class="nav-container">
+        <a th:href="@{/products}" class="nav-brand">
+            <i class="fas fa-shopping-bag"></i> ShopEase
+        </a>
+        <div class="nav-links">
+            <a th:href="@{/products}"><i class="fas fa-store"></i> Shop</a>
+
+            <sec:authorize access="isAuthenticated()">
+                <a th:href="@{/cart}" class="nav-cart">
+                    <i class="fas fa-shopping-cart"></i> Cart
+                </a>
+                <a th:href="@{/orders}"><i class="fas fa-box"></i> Orders</a>
+                <div class="nav-dropdown">
+                    <span class="nav-user"><i class="fas fa-user"></i>
+                        <sec:authentication property="name"/>
+                    </span>
+                    <div class="dropdown-menu">
+                        <a th:href="@{/profile}">My Profile</a>
+                        <sec:authorize access="hasRole('ADMIN')">
+                            <a th:href="@{/admin}">Admin Panel</a>
+                        </sec:authorize>
+                        <form th:action="@{/logout}" method="post">
+                            <button type="submit">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </sec:authorize>
+
+            <sec:authorize access="!isAuthenticated()">
+                <a th:href="@{/login}">Login</a>
+                <a th:href="@{/register}" class="btn-primary-sm">Register</a>
+            </sec:authorize>
+        </div>
+    </div>
+</nav>
+
+</body>
+</html>

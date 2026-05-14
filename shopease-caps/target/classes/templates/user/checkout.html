@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Checkout')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="page-container">
+    <h1 class="page-title"><i class="fas fa-lock"></i> Checkout</h1>
+
+    <div class="checkout-layout">
+        <div class="checkout-form-section">
+            <form th:action="@{/orders/place}" method="post">
+                <div class="checkout-section">
+                    <h3><i class="fas fa-map-marker-alt"></i> Shipping Address</h3>
+                    <textarea name="shippingAddress" rows="3" required
+                              th:text="${user.address}"
+                              placeholder="Enter your full delivery address..."></textarea>
+                </div>
+
+                <div class="checkout-section">
+                    <h3><i class="fas fa-credit-card"></i> Payment Method</h3>
+                    <div class="payment-options">
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="Cash on Delivery" checked/>
+                            <span><i class="fas fa-money-bill"></i> Cash on Delivery</span>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="UPI"/>
+                            <span><i class="fas fa-mobile-alt"></i> UPI Payment</span>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="Credit/Debit Card"/>
+                            <span><i class="fas fa-credit-card"></i> Credit/Debit Card</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-full">
+                    <i class="fas fa-check-circle"></i> Place Order
+                </button>
+            </form>
+        </div>
+
+        <div class="checkout-summary">
+            <h3>Order Items</h3>
+            <div class="checkout-item" th:each="item : ${cart.items}">
+                <img th:src="${item.product.imageUrl}" th:alt="${item.product.name}"
+                     onerror="this.src='https://via.placeholder.com/50x50?text=Img'"/>
+                <div class="checkout-item-info">
+                    <span th:text="${item.product.name}">Product</span>
+                    <span>x<span th:text="${item.quantity}">1</span></span>
+                </div>
+                <span class="checkout-item-price">
+                    ₹<span th:text="${#numbers.formatDecimal(item.subtotal, 1, 'COMMA', 2, 'POINT')}">0</span>
+                </span>
+            </div>
+            <div class="checkout-total">
+                <strong>Total:</strong>
+                <strong>₹<span th:text="${#numbers.formatDecimal(cart.totalPrice, 1, 'COMMA', 2, 'POINT')}">0</span></strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <p>&copy; 2026 ShopEase. All rights reserved.</p>
+</footer>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

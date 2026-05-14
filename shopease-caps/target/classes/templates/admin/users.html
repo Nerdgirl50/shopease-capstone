@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Manage Users')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div class="page-container">
+    <h1 class="page-title"><i class="fas fa-users"></i> Registered Users</h1>
+
+    <div class="table-wrapper">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th><th>Name</th><th>Email</th><th>Phone</th>
+                    <th>Role</th><th>Orders</th><th>Joined</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.name}">Name</td>
+                    <td th:text="${user.email}">Email</td>
+                    <td th:text="${user.phone != null ? user.phone : '-'}">Phone</td>
+                    <td>
+                        <span th:class="${user.role == 'ROLE_ADMIN'} ? 'status-badge status-confirmed' : 'status-badge status-pending'"
+                              th:text="${user.role.replace('ROLE_','')}">Role</span>
+                    </td>
+                    <td th:text="${user.orders.size()}">0</td>
+                    <td th:text="${user.createdAt != null ? #temporals.format(user.createdAt,'dd MMM yyyy') : '-'}">Date</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<footer class="footer"><p>&copy; 2026 ShopEase Admin Panel</p></footer>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('My Cart')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="page-container">
+    <h1 class="page-title"><i class="fas fa-shopping-cart"></i> My Cart</h1>
+
+    <div th:if="${success}" class="alert alert-success">
+        <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+    </div>
+
+    <div th:if="${#lists.isEmpty(cart.items)}" class="empty-state">
+        <i class="fas fa-shopping-cart"></i>
+        <h3>Your cart is empty!</h3>
+        <a th:href="@{/products}" class="btn-primary">Continue Shopping</a>
+    </div>
+
+    <div th:unless="${#lists.isEmpty(cart.items)}" class="cart-layout">
+        <div class="cart-items">
+            <div class="cart-item" th:each="item : ${cart.items}">
+                <img th:src="${item.product.imageUrl}" th:alt="${item.product.name}"
+                     onerror="this.src='https://via.placeholder.com/80x80?text=Img'"/>
+                <div class="cart-item-info">
+                    <h4 th:text="${item.product.name}">Product</h4>
+                    <span class="cart-item-category" th:text="${item.product.category}">Category</span>
+                    <span class="cart-item-price">
+                        ₹<span th:text="${#numbers.formatDecimal(item.product.price, 1, 'COMMA', 2, 'POINT')}">0</span>
+                    </span>
+                </div>
+                <div class="cart-item-qty">
+                    <form th:action="@{/cart/update}" method="post">
+                        <input type="hidden" name="itemId" th:value="${item.id}"/>
+                        <input type="number" name="quantity" th:value="${item.quantity}"
+                               min="1" max="99" onchange="this.form.submit()"/>
+                    </form>
+                </div>
+                <div class="cart-item-subtotal">
+                    ₹<span th:text="${#numbers.formatDecimal(item.subtotal, 1, 'COMMA', 2, 'POINT')}">0</span>
+                </div>
+                <form th:action="@{/cart/remove}" method="post">
+                    <input type="hidden" name="itemId" th:value="${item.id}"/>
+                    <button type="submit" class="btn-remove">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="cart-summary">
+            <h3>Order Summary</h3>
+            <div class="summary-row">
+                <span>Items (<span th:text="${cart.totalItems}"></span>)</span>
+                <span>₹<span th:text="${#numbers.formatDecimal(cart.totalPrice, 1, 'COMMA', 2, 'POINT')}">0</span></span>
+            </div>
+            <div class="summary-row">
+                <span>Shipping</span>
+                <span class="free">FREE</span>
+            </div>
+            <div class="summary-total">
+                <span>Total</span>
+                <span>₹<span th:text="${#numbers.formatDecimal(cart.totalPrice, 1, 'COMMA', 2, 'POINT')}">0</span></span>
+            </div>
+            <a th:href="@{/orders/checkout}" class="btn-full">
+                <i class="fas fa-lock"></i> Proceed to Checkout
+            </a>
+            <a th:href="@{/products}" class="btn-secondary-full">
+                <i class="fas fa-arrow-left"></i> Continue Shopping
+            </a>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <p>&copy; 2026 ShopEase. All rights reserved.</p>
+</footer>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

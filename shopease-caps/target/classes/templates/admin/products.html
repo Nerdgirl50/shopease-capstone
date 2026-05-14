@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Manage Products')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div class="page-container">
+    <div class="admin-page-header">
+        <h1><i class="fas fa-boxes"></i> Manage Products</h1>
+        <a th:href="@{/admin/products/new}" class="btn-primary">
+            <i class="fas fa-plus"></i> Add New Product
+        </a>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success">
+        <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th><th>Image</th><th>Name</th><th>Category</th>
+                    <th>Price</th><th>Stock</th><th>Status</th><th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="product : ${products}">
+                    <td th:text="${product.id}"></td>
+                    <td><img th:src="${product.imageUrl}" width="50" height="50"
+                             style="object-fit:cover;border-radius:4px;"
+                             onerror="this.src='https://via.placeholder.com/50?text=Img'"/></td>
+                    <td th:text="${product.name}">Name</td>
+                    <td th:text="${product.category}">Category</td>
+                    <td>₹<span th:text="${#numbers.formatDecimal(product.price,1,'COMMA',2,'POINT')}"></span></td>
+                    <td th:text="${product.stock}">0</td>
+                    <td>
+                        <span th:if="${product.active}" class="status-badge status-confirmed">Active</span>
+                        <span th:unless="${product.active}" class="status-badge status-cancelled">Inactive</span>
+                    </td>
+                    <td class="action-btns">
+                        <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" class="btn-edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form th:action="@{/admin/products/delete/{id}(id=${product.id})}" method="post"
+                              onsubmit="return confirm('Delete this product?')">
+                            <button type="submit" class="btn-delete"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<footer class="footer"><p>&copy; 2026 ShopEase Admin Panel</p></footer>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
